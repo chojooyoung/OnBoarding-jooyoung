@@ -10,6 +10,9 @@ function Menu() {
         <li>
           <Link to="/posts">Posts</Link>
         </li>
+        <li>
+          <Link to="/write">Write</Link>
+        </li>
       </ul>
     </nav>
   );

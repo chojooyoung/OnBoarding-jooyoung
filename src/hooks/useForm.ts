@@ -2,7 +2,7 @@ import { useState } from "react";
 
 type FormProps = {
   initialValues: {
-    userId: 1;
+    userId: 0;
     title: "";
     body: "";
   };

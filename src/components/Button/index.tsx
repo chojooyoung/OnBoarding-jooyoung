@@ -13,6 +13,7 @@ function Button({ className, children }: Props) {
 export default Button;
 
 const CommonButton = styled.button<{ className: string; children: ReactNode }>`
-  width: 300px;
-  height: 500px;
+  width: 50px;
+  height: 20px;
+  text-align: center;
 `;
