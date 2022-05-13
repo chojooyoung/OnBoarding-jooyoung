@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useCallback, useState } from "react";
+import styled from "styled-components";
 import Spinner from "../Spinner";
 import Button from "../Button";
 import Header from "../Header";
@@ -19,7 +20,6 @@ function PostItem({ post }: Props) {
     id: post.id,
   };
   const [deletloading, setLoading] = useState(false);
-  console.log(deletloading);
 
   const handleDeletePost = useCallback(
     (param: param) => {
@@ -31,9 +31,16 @@ function PostItem({ post }: Props) {
     [dispatch],
   );
   return (
-    <li>
+    <PostInfo>
       <div>{post.title}</div>
-      <Link to={`/post/${post.id}`}>Detail</Link>
+      <div>
+        <Link
+          to={`/post/${post.id}`}
+          style={{ color: "#9a9a9a", fontSize: "12px" }}
+        >
+          Detail
+        </Link>
+      </div>
       <div>
         {deletloading ? (
           <Spinner />
@@ -48,8 +55,14 @@ function PostItem({ post }: Props) {
           </Button>
         )}
       </div>
-    </li>
+    </PostInfo>
   );
 }
 
+const PostInfo = styled.li`
+  display: flex;
+  list-style: none;
+  padding-bottom: 15px;
+  gap: 5px;
+`;
 export default PostItem;

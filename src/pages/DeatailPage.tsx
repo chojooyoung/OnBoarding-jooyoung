@@ -2,10 +2,12 @@ import { Fragment, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router";
+import styled from "@emotion/styled";
 import { postsAction } from "../state/posts";
 import { RootState } from "../state";
 import Spinner from "../components/Spinner";
-import Header from "../components/Header";
+import Divider from "../components/Divider";
+import Button from "../components/Button";
 import Card from "../components/Card";
 
 function DetailPage() {
@@ -35,14 +37,34 @@ function DetailPage() {
   const handleModifyPost = () => {
     navigate(`/modify/${postId}`);
   };
+  const handleNavigatePostList = () => {
+    navigate(`/posts`);
+  };
   return (
     <div>
       {post && !loading ? (
         <Card>
           <h1>{post.title}</h1>
-          <h2>{post.body}</h2>
-          {/* eslint-disable-next-line react/button-has-type */}
-          <button onClick={handleModifyPost}>수정하기</button>
+          <Divider />
+          <h3>{post.body}</h3>
+          <ButtonWrapper>
+            <Button
+              type="button"
+              className="modify-button"
+              onClick={handleModifyPost}
+              disabled={loading}
+            >
+              Modify
+            </Button>
+            <Button
+              type="button"
+              className="modify-button"
+              onClick={handleNavigatePostList}
+              disabled={loading}
+            >
+              List
+            </Button>
+          </ButtonWrapper>
         </Card>
       ) : (
         <Spinner />
@@ -50,5 +72,9 @@ function DetailPage() {
     </div>
   );
 }
-
+const ButtonWrapper = styled.div`
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+`;
 export default DetailPage;

@@ -1,5 +1,5 @@
 import useForm from "../../hooks/useForm";
-import Button from "../Button";
+import SubmitButton from "../SubmitButton";
 import Input from "../Input";
 import CardForm from "../CardForm";
 
@@ -16,7 +16,6 @@ function ModifyForm({ onSubmit, defaultValue }: any) {
         title: "",
         body: "",
       };
-      console.log(title);
       if (!title) newErrors.title = "제목을 입력해주세요.";
       if (!body) newErrors.body = "내용을 입력해주세요.";
       return newErrors;
@@ -47,9 +46,13 @@ function ModifyForm({ onSubmit, defaultValue }: any) {
       </div>
       {errors.body && <span style={{ color: "red" }}>{errors.body}</span>}
       <div>
-        <Button type="submit" disabled={isLoading} className="submitButton">
+        <SubmitButton
+          type="submit"
+          disabled={isLoading}
+          className="submitButton"
+        >
           Modify
-        </Button>
+        </SubmitButton>
       </div>
     </CardForm>
   );

@@ -1,5 +1,5 @@
 import useForm from "../../hooks/useForm";
-import Button from "../Button";
+import SubmitButton from "../SubmitButton";
 import Input from "../Input";
 import CardForm from "../CardForm";
 
@@ -44,9 +44,13 @@ function PostForm({ onSubmit }: any) {
       </div>
       {errors.body && <span style={{ color: "red" }}>{errors.body}</span>}
       <div>
-        <Button type="submit" disabled={isLoading} className="submitButton">
+        <SubmitButton
+          type="submit"
+          disabled={isLoading}
+          className="submitButton"
+        >
           Write
-        </Button>
+        </SubmitButton>
       </div>
     </CardForm>
   );

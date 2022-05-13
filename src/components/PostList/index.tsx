@@ -14,14 +14,17 @@ function PostList() {
       {loading ? (
         <Spinner />
       ) : (
-        <ul>
+        <PostListUl>
           {data.map((post) => {
             return <PostItem key={post.id} post={post} />;
           })}
-        </ul>
+        </PostListUl>
       )}
     </div>
   );
 }
 
+const PostListUl = styled.ul`
+  text-decoration: none;
+`;
 export default PostList;
