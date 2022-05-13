@@ -4,7 +4,11 @@ import { postsAction } from "../posts";
 
 export interface Post {
   id: number;
-  userId: number;
+  title: string;
+  body: string;
+}
+
+export interface PostBody {
   title: string;
   body: string;
 }
@@ -37,6 +41,24 @@ async function deletePost(param: idParam) {
   return resData;
 }
 
+async function createPost(body: PostBody) {
+  const response = await axios.post(`http://localhost:3001/post/`, body);
+  const resData = response.data;
+  return resData;
+}
+
+async function modyfyPost(param: Post) {
+  const requestBody = {
+    title: param.title,
+    body: param.body,
+  };
+  const response = await axios.put(
+    `http://localhost:3001/post/${param.id}`,
+    requestBody,
+  );
+  const resData = response.data;
+  return resData;
+}
 // get Saga
 export function* getDataSaga(action: { payload: ParamType }) {
   const { getDataSuccess, getDataFailure } = postsAction;
@@ -63,6 +85,17 @@ export function* getDataByIdSaga(action: { payload: idParam }) {
     yield put(getDataFailure(err));
   }
 }
+export function* createPostSaga(action: { payload: PostBody }) {
+  const { createPostSuccess, getDataFailure } = postsAction;
+  const body = action.payload;
+  try {
+    const response: Post = yield call(createPost, body);
+    yield put(createPostSuccess(response));
+    // eslint-disable-next-line no-restricted-globals
+  } catch (err) {
+    yield put(getDataFailure(err));
+  }
+}
 
 export function* deletDataSaga(action: { payload: idParam }) {
   const { deleteSucess, getDataFailure } = postsAction;
@@ -75,10 +108,24 @@ export function* deletDataSaga(action: { payload: idParam }) {
   }
 }
 
+export function* modifyDataSaga(action: { payload: Post }) {
+  const { modifyPostSucess, getDataFailure } = postsAction;
+  const param = action.payload;
+  try {
+    yield call(modyfyPost, param);
+    yield put(modifyPostSucess(param));
+  } catch (err) {
+    yield put(getDataFailure(err));
+  }
+}
+
 // Main Saga
 export function* postSaga() {
-  const { getData, getDataById, deletePostById } = postsAction;
+  const { getData, getDataById, deletePostById, createPost, modifyPost } =
+    postsAction;
   yield takeEvery(getData, getDataSaga);
   yield takeEvery(getDataById, getDataByIdSaga);
   yield takeEvery(deletePostById, deletDataSaga);
+  yield takeEvery(createPost, createPostSaga);
+  yield takeEvery(modifyPost, modifyDataSaga);
 }

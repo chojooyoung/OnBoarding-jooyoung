@@ -18,14 +18,14 @@ function PostItem({ post }: Props) {
   const param = {
     id: post.id,
   };
-
-  const [loading, setLoading] = useState(false);
+  const [deletloading, setLoading] = useState(false);
+  console.log(deletloading);
 
   const handleDeletePost = useCallback(
-    async (param: param) => {
+    (param: param) => {
       setLoading(true);
       const { deletePostById } = postsAction;
-      await dispatch(deletePostById(param));
+      dispatch(deletePostById(param));
       setLoading(false);
     },
     [dispatch],
@@ -35,13 +35,17 @@ function PostItem({ post }: Props) {
       <div>{post.title}</div>
       <Link to={`/post/${post.id}`}>Detail</Link>
       <div>
-        {loading ? (
+        {deletloading ? (
           <Spinner />
         ) : (
           //   eslint-disable-next-line react/button-has-type
-          <button className="delete" onClick={() => handleDeletePost(param)}>
+          <Button
+            className="delete"
+            disabled={deletloading}
+            onClick={() => handleDeletePost(param)}
+          >
             Delete
-          </button>
+          </Button>
         )}
       </div>
     </li>

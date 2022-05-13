@@ -7,7 +7,7 @@ interface Props {
 
 function DefaultTemplate({ children }: Props) {
   return (
-    <div>
+    <div style={{ margin: 0 }}>
       <Menu />
       <main>{children}</main>
     </div>

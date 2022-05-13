@@ -2,7 +2,11 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface Post {
   id: number;
-  userId: number;
+  title: string;
+  body: string;
+}
+
+export interface PostBody {
   title: string;
   body: string;
 }
@@ -56,6 +60,13 @@ export const postsSlice = createSlice({
       }
       state.loading = false;
     },
+    createPostSuccess: (state, action: PayloadAction<Post>) => {
+      state.data.push(action.payload);
+      state.loading = false;
+    },
+    createPost: (state, action: PayloadAction<PostBody>) => {
+      state.loading = true;
+    },
     getDataById: (state, action: PayloadAction<idParam>) => {
       state.loading = true;
     },
@@ -63,6 +74,15 @@ export const postsSlice = createSlice({
       state.loading = true;
     },
     deleteSucess: (state, action: PayloadAction<idParam>) => {
+      state.loading = false;
+      const { id } = action.payload;
+      const index = state.data.findIndex((post) => post.id === id);
+      if (index !== -1) state.data.splice(index, 1);
+    },
+    modifyPost: (state, action: PayloadAction<Post>) => {
+      state.loading = true;
+    },
+    modifyPostSucess: (state, action: PayloadAction<Post>) => {
       state.loading = false;
       const { id } = action.payload;
       const index = state.data.findIndex((post) => post.id === id);

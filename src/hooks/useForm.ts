@@ -1,32 +1,47 @@
-import { useState } from "react";
+import React, { ChangeEvent, FormEvent, useState, useEffect } from "react";
 
-type FormProps = {
-  initialValues: {
-    userId: 0;
-    title: "";
-    body: "";
-  };
-  onSubmit: (form: { userId: number; title: string; body: string }) => void;
-};
+interface UseFormArgs<T> {
+  initialValues: T;
+  onSubmit: (values: T) => void;
+  validate: (values: T) => T;
+}
 
-const useForm = ({ initialValues, onSubmit }: FormProps) => {
-  const [values, setValues] = useState(initialValues);
+const useForm = <T>({ initialValues, onSubmit, validate }: UseFormArgs<T>) => {
+  const [values, setValues] = useState<T>(initialValues);
+  const [errors, setErrors] = useState<T>(initialValues);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleChange = (e: any) => {
-    const { name, value } = e.target;
+  useEffect(() => {
+    const newError = validate(values);
+    setErrors(newError);
+  }, [values]);
+
+  const handleChange = (
+    event: ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
+  ) => {
+    const { name, value } = event.target;
     setValues({ ...values, [name]: value });
   };
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     setIsLoading(true);
-    e.preventDefault();
-    onSubmit(values);
+    event.preventDefault();
+    const newErrors = validate ? validate(values) : initialValues;
+    // if (Object.keys(newErrors)[0] === "" && Object.keys(newErrors)[1] === "") {
+    //   console.log("no error");
+    //   await onSubmit(values);
+    // }
+    await onSubmit(values);
+    setErrors(newErrors);
     setIsLoading(false);
   };
 
   return {
     values,
+    setValues,
+    errors,
     isLoading,
     handleChange,
     handleSubmit,

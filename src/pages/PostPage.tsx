@@ -11,11 +11,11 @@ function PostsPage() {
   useEffect(() => {
     const { getData } = postsAction;
     dispatch(getData({ post: "post" }));
-  }, []);
+  }, [dispatch]);
 
   return (
     <div>
-      <Header>게시글목록</Header>
+      <h1>게시글목록</h1>
       <PostList />
     </div>
   );
