@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import PostForm from "@components/PostForm";
 import { postsAction } from "../state/posts";
 import { RootState } from "../state";
-import PostForm from "../components/PostForm";
 
 function WritePage() {
   const navigate = useNavigate();

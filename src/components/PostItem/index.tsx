@@ -4,7 +4,6 @@ import { useCallback, useState } from "react";
 import styled from "styled-components";
 import Spinner from "../Spinner";
 import Button from "../Button";
-import Header from "../Header";
 import { Post, postsAction } from "../../state/posts";
 
 interface Props {

@@ -13,5 +13,4 @@ function DefaultTemplate({ children }: Props) {
     </div>
   );
 }
-
 export default DefaultTemplate;

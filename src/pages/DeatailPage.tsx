@@ -1,14 +1,14 @@
-import { Fragment, useEffect, useCallback } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router";
 import styled from "@emotion/styled";
-import { postsAction } from "../state/posts";
+import Spinner from "@components/Spinner";
+import Divider from "@components/Divider";
+import Button from "@components/Button";
+import CardForm from "@components/CardForm";
 import { RootState } from "../state";
-import Spinner from "../components/Spinner";
-import Divider from "../components/Divider";
-import Button from "../components/Button";
-import Card from "../components/Card";
+import { postsAction } from "../state/posts";
 
 function DetailPage() {
   const { postId } = useParams<{ postId: any }>();
@@ -43,7 +43,7 @@ function DetailPage() {
   return (
     <div>
       {post && !loading ? (
-        <Card>
+        <CardForm>
           <h1>{post.title}</h1>
           <Divider />
           <h3>{post.body}</h3>
@@ -65,7 +65,7 @@ function DetailPage() {
               List
             </Button>
           </ButtonWrapper>
-        </Card>
+        </CardForm>
       ) : (
         <Spinner />
       )}

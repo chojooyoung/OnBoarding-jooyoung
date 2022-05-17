@@ -1,5 +1,7 @@
 import React from "react";
 import { Route, Routes, Router } from "react-router";
+import HomeText from "@components/Home";
+import DefaultTemplate from "@components/DefaultTemplate";
 import {
   PostsPage,
   NotFoundPage,
@@ -7,13 +9,12 @@ import {
   DetailPage,
   ModifyPage,
 } from "./pages";
-import DefaultTemplate from "./components/DefaultTemplate";
 
 function App() {
   return (
     <DefaultTemplate>
       <Routes>
-        <Route path="/" element={<h1>주영게시판</h1>} />
+        <Route path="/" element={<HomeText />} />
         <Route path="/posts" element={<PostsPage />} />
         <Route path="/write/new" element={<WritePage />} />
         <Route path="/post/:postId" element={<DetailPage />} />

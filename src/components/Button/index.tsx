@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { ReactNode, ButtonHTMLAttributes } from "react";
+import { ReactNode } from "react";
 
 interface Props {
   // eslint-disable-next-line react/require-default-props

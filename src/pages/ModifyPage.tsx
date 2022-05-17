@@ -12,12 +12,6 @@ function ModifyPage() {
 
   const dispatch = useDispatch();
 
-  const [loading, setLoading] = useState(false);
-
-  const currentyPostList = useSelector((state: RootState) => {
-    return state.postsReducer.data;
-  });
-
   const post = useSelector((state: RootState) => {
     return state.postsReducer.data.find(
       (post) => post.id === parseInt(postId, 10),
@@ -30,7 +24,6 @@ function ModifyPage() {
   }, []);
 
   const onSubmit = async (values: { title: string; body: string }) => {
-    setLoading(true);
     const { modifyPost } = postsAction;
     const modifyData = {
       title: values.title,
@@ -39,7 +32,6 @@ function ModifyPage() {
     };
     await dispatch(modifyPost(modifyData));
     navigate(`/post/${postId}`);
-    setLoading(false);
   };
 
   return (
