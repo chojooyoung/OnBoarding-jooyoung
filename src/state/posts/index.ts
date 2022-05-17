@@ -25,9 +25,6 @@ interface idParam {
   id: number;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface emptyParam {}
-
 export const postsSlice = createSlice({
   name: "posts",
   initialState: {
@@ -37,8 +34,6 @@ export const postsSlice = createSlice({
   } as PostsState,
   reducers: {
     getDataSuccess: (state, action: PayloadAction<Post[]>) => {
-      // const newState = state.data.concat(action.payload);
-      // state.data = newState;
       state.data = action.payload;
       state.loading = false;
     },
@@ -60,6 +55,9 @@ export const postsSlice = createSlice({
       }
       state.loading = false;
     },
+    getDataById: (state, action: PayloadAction<idParam>) => {
+      state.loading = true;
+    },
     createPostSuccess: (state, action: PayloadAction<Post>) => {
       state.data.push(action.payload);
       state.loading = false;
@@ -67,9 +65,7 @@ export const postsSlice = createSlice({
     createPost: (state, action: PayloadAction<PostBody>) => {
       state.loading = true;
     },
-    getDataById: (state, action: PayloadAction<idParam>) => {
-      state.loading = true;
-    },
+
     deletePostById: (state, action: PayloadAction<idParam>) => {
       state.loading = true;
     },
@@ -86,24 +82,12 @@ export const postsSlice = createSlice({
       state.loading = false;
       const { id } = action.payload;
       const index = state.data.findIndex((post) => post.id === id);
-      if (index !== -1) state.data.splice(index, 1);
+      if (index !== -1) {
+        state.data[index] = action.payload;
+      }
     },
   },
-  extraReducers: {
-    // [fetchAllPost.pending.type]: (state: PostsState) => {
-    //   state.data = [];
-    //   state.loading = true;
-    // },
-    // [fetchAllPost.fulfilled.type]: (
-    //   state: PostsState,
-    //   action: PayloadAction<Post[]>,
-    // ) => {
-    //   state.data.push(...action.payload);
-    //   state.loading = false;
-    // },
-    // // eslint-disable-next-line no-empty-function
-    // [fetchAllPost.pending.type]: () => {},
-  },
+  extraReducers: {},
 });
 export const posts = postsSlice.name;
 export const postsReducer = postsSlice.reducer;
