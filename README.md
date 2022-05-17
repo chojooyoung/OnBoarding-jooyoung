@@ -432,7 +432,8 @@ ex)게시글 데이터를 받아오는 postPage에서 mounted 되었을때, getD
 보통 redux를 포함하여 단위테스트를 진행할때는 state와 해당 actions들을 mocking 하여 설정한 단위의 라우팅,렌더링, 데이터바인딩을 테스팅하는 것으로 확인했습니다.
 그러나 공식문서에서 saga자체를 테스팅하는 방법을 소개하는 챕터가 있길래, 학습을 위하여 읽다가, 간편해보이는 라이브러리 "redux-saga-test-plan" 라이브러리를 이용하여 테스팅하였습니다. 
 
-[공식문서링크](https://redux-saga.js.org/docs/advanced/Testing/).
+[공식문서링크](https://redux-saga.js.org/docs/advanced/Testing/)
+
 [참고문서](https://ui.toast.com/weekly-pick/ko_20180514)
 
 이렇듯 개발 프로세스를 reducer && saga 개발 -> Test 에 맞춰 진행하였습니다.
@@ -510,59 +511,78 @@ action 들이 잘 생성이 되는 지에 대한 검증이 되었으므로, 실�
 
 그러나 위의 TC는, 직접적으로 dispatch를 이용해 state 데이터에 영향을 주는 방식이므로, 단위테스트의 방향과 맞지 않다고 생각하여, 첫 initialState만을 검증하는 것으로 나머지 Test들은 주석처리를 하였습니다. 그렇게 state에 대한 검증을 위해서도, ***redux-saga-test-plan*** 을 사용하여 saga에 대한 검증이 필요하다 생각하였습니다.
 
+### ```Saga.test.tsx```
 
-- 로그인 컴포넌트가 렌더링이 잘 되었는가?
-- 로그인버튼 클릭시 로그인 알림처리가 잘 되는가?(올바른 정보입력/아닌입력)
-- mocking한 api repository함수가 호출되는가?
-- mocking한 api repository함수로 alert이 동작하는가
-- mocking한 router함수로 라우팅이 잘 동작하는가?
+saga의 내용과 함께 TC를 살펴보겠습니다.
 
-### ```UserInfo/userInfo.spec.js```
+```tsx
+export function* getDataSaga(action: { payload: ParamType }) {
+  const { getDataSuccess, getDataFailure } = postsAction;
+  const param = action.payload;
+  try {
+    const response: Post[] = yield call(API.getPostList, param);
+    // call은 미들웨어에게 함수와 인자들을 실행하라는 명령
+    yield put(getDataSuccess(response));
+    // put은 dispatch 를 뜻한다.
+  } catch (err) {
+    yield put(getDataFailure(err));
+  }
+}
 
-사용자 정보 페이지는, created훅을 이용하여 create될시, store에 정의된 token을 가지고 데이터를 받아와서 화면에 나타내주는 컴포넌트입니다.
-처음에는 setData를 통해 data인스턴스에 값을 줘서, 해당 내용이 잘 렌더링이 되는지에 대한 테스팅을 먼저하고, 실제 컴포넌트에선 요청한데이터를 뿌려주기 때문에, 해당 요청함수가 필요합니다.
-따라서 데이터를 받아올 함수를 mocking하여, response값을 실제데이터처럼 줘서 검증을 하였습니다.
-
-login과 마찬가지로, routing 검사는 mocking Router 방식으로 진행하였습니다.
-
-- 유저정보 컴포넌트가 렌더링이 잘 되었는가?
-- 유저 정보 관련 태그들이 데이터를 잘 나타내는가?
-- 로그아웃버튼 클릭시 알림처리가 잘 되는가?
-- mocking한 api repository함수가 호출되는가
-- mocking한 api repository함수로 렌더링이 잘이루어지는가
-- mocking한 router함수로 로그아웃 라우팅이 잘 동작하는가?
-
-### ```ResetPw/checkEmail.spec.js```
-
-인풋폼에 유저 이메일을 받아, store에 저장하고 이를 바탕으로 요청처리 및 결과처리(다음페이지로 라우팅)를 하는 컴포넌트입니다. 인풋데이터에 대한 검증, 라우팅에 대한 검증이 필요합니다.
-plugin으로 import 해온 store를 연결하고, 로그인과 크게 다르지 않게 검증하였습니다.
-
-- 비밀번호 초기화 컴포넌트가 렌더링이 잘 되었는가?
-- 다음버튼 클릭시 인증성공 여부와 관계없이 알림처리가 잘 되는가
-- mocking한 api repository함수가 호출되는가?
-- mocking한 api repository함수로 alert이 동작하는가?
-- mocking한 router함수로 라우팅이 잘 동작하는가?
-
-### ```ResetPw/checkAuthCode.spec.js```
-
-인풋폼에 인증번호를 받아 요청처리 및 결과처리를 하는 컴포넌트입니다. 앞서 email과 똑같은 방식으로 TC를 짰습니다.
-
-### ```ResetPw/resetPw.spec.js```
-
-인풋폼 두개로 비밀번호를 검증하는 컴포넌트입니다. 로그인과 같은 방식으로 TC를 짰습니다.
-
-## 6. 리뷰어에게 강조하고 싶은 부분 또는 그 외 기타 내용
-
-### ✅ 사소하지만 추가적 기능
-
-- [x] 모든 마크업은 스스로 하였고, scss를 사용하였습니다. 나름의 반응형으로 구현하였습니다.(사용자 정보 페이지)
-- [x] SessionStorage를 store와 연계 사용하여, 새로고침시 토큰을 유지하도록 하였습니다. SessionStorage를 사용한 이유는, 개인정보 데이터기 때문에 무한정 저장되는 것이 아닌, 세션이 닫히면 자동으로 삭제되게끔 하는 것이 보안적으로 더 좋다는 나름의 근거를 갖고 사용하였습니다. 
-- [x] 요구사항에 input을 사용할 일이 많아 input에 require를 주어, 입력하지 않는 다면 넘어가지 않게 하였습니다.
+```
 
 
+```tsx
+describe("getPostDataSaga", () => {
+  const param = { payload: { post: "post" } };
+  const MockPostResponse = [{ id: 1, title: "test", body: "test" }];
+  const { getDataSuccess, getDataFailure } = postsAction;
 
-- [x] maxLength를 사용하여 input값 길이에서 나올 수 있는 오류를 사전에 방지하고, ux적으로 좋게 유도하였습니다.
-- [x] router/userInfo.js 안에 navigationGuard를 사용하여 인증되지 않은 사용자가 임의로 url을 임의로 조작하여 내정보 페이지로 이동하는 것을 방지 하였습니다.
+  it("getDataSaga 정상 진행", async () => {
+    await expectSaga(Saga.getDataSaga, param)
+      .withReducer(rootReducer)
+      // API Mocking response 제공
+      .provide([[matchers.call.fn(Api.getPostList), MockPostResponse]])
+      // put으로 actions 실행
+      .put(getDataSuccess(MockPostResponse))
+      // state 에 정상 반영 되는가?
+      .hasFinalState({
+        postsReducer: { data: MockPostResponse, loading: false, error: null },
+      })
+      .run();
+  });
+
+  it("getDataSaga 에러 반환", async () => {
+    const error = new Error("모의 에러");
+
+    await expectSaga(Saga.getDataSaga, param)
+      .withReducer(rootReducer)
+      .provide([[matchers.call.fn(Api.getPostList), throwError(error)]])
+      .put(getDataFailure(error))
+      .hasFinalState({
+        postsReducer: { data: [], loading: true, error },
+      })
+      .run();
+  });
+});
+```
+
+먼저 payload로 전해줄 데이터인 param, api 통신의 mocking response MockPostResponse를 정의합니다.
+
+expectSaga로 saga를 선택해주고, .withReducer로 reducer를 선택합니다.(여기서는 rootReducer)
+
+다음으로, .provide 키워드로 mocking이 필요한 saga안에서 call로 부른 함수(여기선 api 함수)를 response값을 정하여 mocking해줍니다.
+
+.put 키워드로 actions를 실행시켜 state를 업데이트 시킵니다.
+
+.hasFinalState 키워드로 state 를 검증합니다.(해당 테스트를 위한 모의 state)
+
+.run키워드로 테스트를 실행시킵니다.
+
+이렇게 간편하게 saga의 테스팅을 진행 할 수 있어 편리한 라이브러리를 사용하여 TC를 작성하여 검증하였습니다.
+
+## 6. 시연
+
 
 
 
@@ -572,16 +592,14 @@ plugin으로 import 해온 store를 연결하고, 로그인과 크게 다르지 
 
 ### ✅ 아쉬운점
 
-- [x] 타입스크립트를 사용하지 못하였습니다. 타입스크립트를 사용해본 경험이 없어 3일이내로 셋팅부터 구현까지 도전하기란 무리가 있다고 판단하여, 자신있는 언어인 Js로 일단 작성하여 제출하였습니다.. 제약사항을 못지켜 너무 아쉽고 꼭 공부를 시작해야하는 계기가 된 것 같습니다.
-- [x] 지금은 각 컴포넌트내 에서 api요청까지 진행을 하도록 구현하였습니다. 그러나 vuex을 적극적으로 사용하려면 api요청까지 vuex안의 actions로 구현이 되었더라면
-  더 좋고 유지보수성이 좋은 vuex활용이 될 수 있었을텐데, repository pattern으로 인터페이스를 만들면서, 해당 api요청 함수를 import해오는 과정중, cycle오류가 생겨(interceptor파일안에 로그인후 store를 import 해서 token을 header에 넣어주는 로직때문에 서로 import하는 상황이 발생) 
-  부득이하게 컴포넌트안에서 데이터를 받아왔습니다. 이 점이 너무 아쉽습니다. 인터페이스 설계시, 조금 더 깊이 생각하여 설계하는 것이 중요하다고 생각했습니다. 
-- [x] 자주쓰이는 input을 컴포넌트화 해서 재사용성을 높혔다면 더 좋았을 것 같습니다. 당장 구현에 급급하여 설계시간을 충분히 갖지못하고 시간분배를 잘 못한 점 너무 아쉽습니다. 
-- [x] 인증번호 검증페이지의 TC를 작성하여 그에맞게 로직을 짜보았으나, jest의 알수없는 오류 쓰지도 않은 'hasOwnProperty'함수가 가 undefined하다는 오류가 나와 결국 TC를 지우고, 개발만 하였습니다. 다른페이지와의 차이점이라면 setInterval을 사용한 페이지인 것 같은데, 앞으로 사용할때마다 대처가 되지 않는다면 치명적일 수 있다 판단하여, 원인을 찾아보고 싶습니다.
+- [x] 타입스크립트를 처음 사용하다보니, 제네릭등 적극활용을 못한 점이 아쉽습니다. 오류를 사전에 방지하는 것은 매우 좋은 기능인 것 같고, 왜 도입하는지 알 것 같습니다. 적극활용 할 수 있도록 해보겠습니다.
+- [x] 리액트에 조금 더 익숙해 질 필요를 느꼈습니다. 현재 개발 프로세스가 vue.js에선 이런식으로 했을 것 같다 => 이것을 바탕으로 react로 옮기기로 진행을 하였는데(lifeCycle, 단,양방향 바인딩, 메모이제이션 방법등), 이제는 바로바로 react의 개발방식이 떠오를 수 있게 해야 할 것 같습니다.  
 - [x] ui를 제대로 못챙긴 것 같습니다. 프론트엔드 개발자라면 그래도 디자인을 신경써야 하는데, 제가 부족한 탓에 디자인을 많이 신경쓰지 못하였습니다.
+- [x] ui를 못챙긴만큼, 게시판기능에 조금 소홀한 것 같습니다. 게시글 리스트에 pagenation or 무한스크롤등 page정보를 서버에 넘겨 순차적으로 데이터를 받아오고, 거기서 디바운싱이나 쓰로틀링을 넣어 최적화 하는 구상을 했었으나, 시간에 비해 리소스를 크게 잡아먹는다는 작업이라 판단했기에 포기하엿습니다. 또한 게시글 수정시, input에 defaultvalue로 기존 값을 넣었기 때문에, validation에서 빈값으로 인식하여 오류메세지를 띄우는 등 자잘한 버그fix를 하지 못하였습니다.
+- [x] 컴포넌트, 더 작게는 태그 단위의 TC를 작성하지 못 한 것이 아쉽습니다. 팀이 E2E등 테스트코드를 도입하는 과도기적 단계에 있는 지금, 도움이 되고 빠르게 적응 할 수 있도록 더 디벨롭하여 기여하고 싶습니다.
 
-### 과제를 마치며..
+### 1차 온보딩을 마치며..
 
-채용프로세스중 과제전형은 처음 겪어보는 진귀한 경험이었습니다. 물론 제가 신입이다 보니 여러기업의 채용프로세스를 겪은 것은 아니지만, 데드라인 내에 개발을 한다는 압박이 되려 진짜 개발자가 된 느낌을 받았고, 저의 여러가지를 코드에 녹아내리면서 PR할수있는 기회이자 동시에 기업에서는 제 문제점들을 한번에 확인 할 수 있는 좋은 프로세스 중 하나라고 느꼈습니다.
-과제내용을 보고, 간단하다고 생각하였으나 실제로는 여러가지 난관에 부딪히며 자만 했던 제 마음을 다시금 바로잡을 수 있었습니다. 이를 발판으로 더욱 성장하는 계기로 삼아 멈추지 않겠다는 의지를 다졌습니다.
+첫 회사이기도 하면서, 처음 받아본 온보딩 과제는 처음 겪어보는 진귀한 경험이었습니다. 물론 제가 신입이다 보니 여러기업의 온보딩 프로세스를 겪은 것은 아니지만, 필요한 개발 장비를 셋팅하고, 비지니스 로직에 맞는 기술들을 미리 공부시켜주고, 이를 팀원들에게 발표까지 하는 경험은 되려 진짜 개발자가 된 느낌을 받았고, 저의 여러가지를 코드에 녹아내리면서 공부 할수있는 기회이자 동시에 팀원에게서 제 문제점들을 한번에 확인 할 수 있는 좋은 프로세스 중 하나라고 느꼈습니다.
+내용을 보고, 간단하다고 생각하였으나 처음써보는, 익숙하지않은 기술스택으로 실제로는 여러가지 난관에 부딪히며 개발의지를 다시금 바로잡을 수 있었습니다. 이를 발판으로 더욱 성장하는 계기로 삼아 멈추지 않겠다는 의지를 다졌습니다.
 부족한 저에게 여러가지 깨달음과 이런 소중한 기회를 주시어 감사의 인사를 드리면서, 작성을 마무리 하고자 합니다. 긴 글 읽어주셔서 감사합니다.
