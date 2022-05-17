@@ -164,8 +164,7 @@ TestCode를 작성하는 곳 입니다.
 
 ### ```src/state```
 
-![image-20220517171109220](/Users/jooyoung/Library/Application Support/typora-user-images/image-20220517171109220.png)
-
+<img width="135" alt="image" src="https://user-images.githubusercontent.com/66211721/168856896-e57e93a4-7f75-42a7-b9bc-24a85feb7f4d.png">
 
 
 상태관리 사용에 필요한 폴더입니다. 
