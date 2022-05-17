@@ -1,5 +1,5 @@
 import { call, put, takeEvery } from "@redux-saga/core/effects";
-import axios, { AxiosRequestConfig } from "axios";
+import API from "../../api";
 import { postsAction } from "../posts";
 
 export interface Post {
@@ -20,51 +20,13 @@ interface ParamType {
 interface idParam {
   id: number;
 }
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface emptyParam {}
 
-async function getPostList(param: ParamType) {
-  const response = await axios.get(`http://localhost:3001/${param.post}`);
-  const resData = response.data;
-  return resData;
-}
-
-async function getPostById(param: idParam) {
-  const response = await axios.get(`http://localhost:3001/post/${param.id}`);
-  const resData = response.data;
-  return resData;
-}
-
-async function deletePost(param: idParam) {
-  const response = await axios.delete(`http://localhost:3001/post/${param.id}`);
-  const resData = response;
-  return resData;
-}
-
-async function createPost(body: PostBody) {
-  const response = await axios.post(`http://localhost:3001/post/`, body);
-  const resData = response.data;
-  return resData;
-}
-
-async function modyfyPost(param: Post) {
-  const requestBody = {
-    title: param.title,
-    body: param.body,
-  };
-  const response = await axios.put(
-    `http://localhost:3001/post/${param.id}`,
-    requestBody,
-  );
-  const resData = response.data;
-  return resData;
-}
 // get Saga
 export function* getDataSaga(action: { payload: ParamType }) {
   const { getDataSuccess, getDataFailure } = postsAction;
   const param = action.payload;
   try {
-    const response: Post[] = yield call(getPostList, param);
+    const response: Post[] = yield call(API.getPostList, param);
     // call은 미들웨어에게 함수와 인자들을 실행하라는 명령
     yield put(getDataSuccess(response));
     // put은 dispatch 를 뜻한다.
@@ -77,7 +39,7 @@ export function* getDataByIdSaga(action: { payload: idParam }) {
   const { getDataByIdSuccess, getDataFailure } = postsAction;
   const param = action.payload;
   try {
-    const response: Post = yield call(getPostById, param);
+    const response: Post = yield call(API.getPostById, param);
     // call은 미들웨어에게 함수와 인자들을 실행하라는 명령
     yield put(getDataByIdSuccess(response));
     // put은 dispatch 를 뜻한다.
@@ -89,7 +51,7 @@ export function* createPostSaga(action: { payload: PostBody }) {
   const { createPostSuccess, getDataFailure } = postsAction;
   const body = action.payload;
   try {
-    const response: Post = yield call(createPost, body);
+    const response: Post = yield call(API.createPost, body);
     yield put(createPostSuccess(response));
     // eslint-disable-next-line no-restricted-globals
   } catch (err) {
@@ -101,7 +63,7 @@ export function* deletDataSaga(action: { payload: idParam }) {
   const { deleteSucess, getDataFailure } = postsAction;
   const param = action.payload;
   try {
-    yield call(deletePost, param);
+    yield call(API.deletePost, param);
     yield put(deleteSucess(param));
   } catch (err) {
     yield put(getDataFailure(err));
@@ -112,7 +74,7 @@ export function* modifyDataSaga(action: { payload: Post }) {
   const { modifyPostSucess, getDataFailure } = postsAction;
   const param = action.payload;
   try {
-    yield call(modyfyPost, param);
+    yield call(API.modyfyPost, param);
     yield put(modifyPostSucess(param));
   } catch (err) {
     yield put(getDataFailure(err));
