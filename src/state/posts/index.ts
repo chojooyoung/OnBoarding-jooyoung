@@ -41,6 +41,7 @@ export const postsSlice = createSlice({
       state.loading = true;
       state.error = error;
     },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     getData: (state, action: PayloadAction<ParamType>) => {
       state.loading = true;
     },
@@ -55,6 +56,7 @@ export const postsSlice = createSlice({
       }
       state.loading = false;
     },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     getDataById: (state, action: PayloadAction<idParam>) => {
       state.loading = true;
     },
@@ -62,10 +64,11 @@ export const postsSlice = createSlice({
       state.data.push(action.payload);
       state.loading = false;
     },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     createPost: (state, action: PayloadAction<PostBody>) => {
       state.loading = true;
     },
-
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     deletePostById: (state, action: PayloadAction<idParam>) => {
       state.loading = true;
     },
@@ -75,6 +78,7 @@ export const postsSlice = createSlice({
       const index = state.data.findIndex((post) => post.id === id);
       if (index !== -1) state.data.splice(index, 1);
     },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     modifyPost: (state, action: PayloadAction<Post>) => {
       state.loading = true;
     },

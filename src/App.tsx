@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Routes, Router } from "react-router";
+import { Route, Routes } from "react-router";
 import HomeText from "@components/Home";
 import DefaultTemplate from "@components/DefaultTemplate";
 import {

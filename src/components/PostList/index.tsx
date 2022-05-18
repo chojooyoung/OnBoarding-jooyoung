@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-import { useCallback, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "src/state";
 import PostItem from "../PostItem";

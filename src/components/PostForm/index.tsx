@@ -3,14 +3,19 @@ import SubmitButton from "../SubmitButton";
 import Input from "../Input";
 import CardForm from "../CardForm";
 
+interface FormType {
+  title: string;
+  body: string;
+}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function PostForm({ onSubmit }: any) {
-  const { errors, isLoading, handleChange, handleSubmit } = useForm({
+  const { errors, isLoading, handleChange, handleSubmit } = useForm<FormType>({
     initialValues: {
       title: "",
       body: "",
     },
     onSubmit,
-    validate: (values) => {
+    validate: (values): FormType => {
       const { title, body } = values;
       const newErrors = {
         title: "",

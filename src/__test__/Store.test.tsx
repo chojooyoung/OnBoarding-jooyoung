@@ -1,4 +1,5 @@
 import { store } from "../state";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { postsAction } from "../state/posts";
 
 describe("Store", () => {

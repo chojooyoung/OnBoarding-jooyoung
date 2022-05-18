@@ -11,6 +11,7 @@ import { RootState } from "../state";
 import { postsAction } from "../state/posts";
 
 function DetailPage() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { postId } = useParams<{ postId: any }>();
 
   const navigate = useNavigate();
