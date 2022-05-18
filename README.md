@@ -163,6 +163,49 @@ TestCode를 작성하는 곳 입니다.
 ### ```src/hooks```
 
 필요하다면 사용할 custom hooks 담아두는 공간입니다. 금번과제에서는 useForm customhook을 만들어 validation 설정을 해주었습니다.
+useForm.ts
+```ts
+const useForm = <T>({ initialValues, onSubmit, validate }: UseFormArgs<T>) => {
+  const [values, setValues] = useState<T>(initialValues);
+  const [errors, setErrors] = useState<T>(initialValues);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const newError = validate(values);
+    setErrors(newError);
+  }, [values]);
+
+  const handleChange = (
+    event: ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
+  ) => {
+    const { name, value } = event.target;
+    setValues({ ...values, [name]: value });
+  };
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    setIsLoading(true);
+    event.preventDefault();
+    const newErrors = validate ? validate(values) : initialValues;
+    if (Object.keys(newErrors)[0] === "" && Object.keys(newErrors)[1] === "") {
+    await onSubmit(values);
+    }
+    setErrors(newErrors);
+    setIsLoading(false);
+  };
+
+  return {
+    values,
+    setValues,
+    errors,
+    isLoading,
+    handleChange,
+    handleSubmit,
+  };
+};
+
+```
 
 ### ```src/pages```
 
