@@ -1,6 +1,6 @@
 # 📌OnBoarding-조주영-FINDA
 
-##목차 
+## 목차 
 - 1. 프로젝트 셋팅
 - 2. 주 사용 라이브러리와 사용 의도
 - 3. 프로젝트 폴더 구조와 설계 의도
@@ -156,6 +156,7 @@ json-server를 이용하여 서버를 셋팅하였습니다. 기본구조는 아
 TestCode를 작성하는 곳 입니다.
 
 ### ```src/components```
+<img width="177" alt="image" src="https://user-images.githubusercontent.com/66211721/168946684-a202685d-61d2-470d-a8ec-8cec18305216.png">
 
 컴포넌트들을 담아두는 공간입니다.
 
